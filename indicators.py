@@ -63,7 +63,7 @@ def get_momentum_strategy():
             {"kind": "ppo"},
             {"kind": "psl"},
             {"kind": "pvo"},
-            # {"kind": "qqe"}, # can't use
+            # {"kind": "qqe"},
             {"kind": "roc"},
             {"kind": "rsi"},
             {"kind": "rsx"},
@@ -75,7 +75,7 @@ def get_momentum_strategy():
             {"kind": "squeeze_pro"},
             {"kind": "stoch"},
             {"kind": "stochrsi"},
-            # {"kind": "td_seq"}, # cant' use
+            # {"kind": "td_seq"},
             {"kind": "trix"},
             {"kind": "tsi"},
             {"kind": "uo"},
