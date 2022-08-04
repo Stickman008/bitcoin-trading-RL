@@ -14,4 +14,4 @@ def load_data(path, strategy=None):
     return data
 
 def modify_strategy(df, strategy):
-    df.ta.strategy(strategy)
+    df.ta.strategy(strategy, timed=True)
