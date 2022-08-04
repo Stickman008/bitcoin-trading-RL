@@ -95,10 +95,10 @@ class TradingEnv():
         current_price = self.getCurrentPrice()
         reward = 0
         if len(actions) == 0:
-            penalty = self.getNetWorth()/self.initalize_balance
+            penalty = self.getBalance()/self.initalize_balance
             self.accumulate_penalty += penalty
         else:
-            self.accumulate_penalty = 0
+            self.accumulate_penalty = 0 # reset penalty when make action
             for action in actions:
                 action_type = action["order_type"]
                 if action_type == "open_long" or action_type == "open_short":
@@ -109,7 +109,6 @@ class TradingEnv():
                         # print(current_price-self.positions[action["id"]]["entry_price"])
                     elif action_type == "close_short":
                         reward += (self.positions[action["id"]]["entry_price"]-current_price)*self.positions[action["id"]]["amount"]
-                        pass
 
         return reward - self.accumulate_penalty
 
