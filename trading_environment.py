@@ -100,13 +100,16 @@ class TradingEnv():
         else:
             self.accumulate_penalty = 0
             for action in actions:
-                if action == "open_long" or action == "open_short":
-                    reward = 0
+                action_type = action["order_type"]
+                if action_type == "open_long" or action_type == "open_short":
+                    pass
                 else:
-                    if action == "close_long":
-                        reward += (current_price-self.positions[action["id"]]["entry_price"]) * self.positions[action["id"]]["amount"]
-                    elif action == "close_short":
-                        reward = 0
+                    if action_type == "close_long":
+                        reward += (current_price-self.positions[action["id"]]["entry_price"])*self.positions[action["id"]]["amount"]
+                        # print(current_price-self.positions[action["id"]]["entry_price"])
+                    elif action_type == "close_short":
+                        reward += (self.positions[action["id"]]["entry_price"]-current_price)*self.positions[action["id"]]["amount"]
+                        pass
 
         return reward - self.accumulate_penalty
 
