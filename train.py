@@ -38,3 +38,4 @@ for episode in range(EPISODES):
     # print("--- %s seconds ---" % (episode_end_time - episode_start_time))
 
 print(f"total time: {total_time}")
+# for 50_000 -> 1636.39 sec = 27.27 min -> 30.56 it/sec (when note perform replay experience)

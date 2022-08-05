@@ -34,6 +34,7 @@ class TradingEnv():
     def reset(self):
         self.current_step = self.window_size
         self.balance = self.initalize_balance
+        self.total_asset = 0
         self.accumulate_penalty = 0
         self.positions = dict()
         self.position_id_increment = 0
@@ -80,14 +81,16 @@ class TradingEnv():
                 pass
         
         next_obs = self.get_observation()
+        
         done = self.current_step == self.total_steps
+        if self.getNetWorth() < self.initalize_balance/4:
+            done = True
         return next_obs, reward, done
     
 
     def get_observation(self, features=False):
         obs = self.prices[self.current_step-self.window_size: self.current_step].reshape(-1, 1)
         if features:
-            # print(obs.shape, self.features[self.current_step-self.window_size: self.current_step, :].shape)
             obs = np.concatenate([obs, self.features[self.current_step-self.window_size: self.current_step, :]], axis=1)
         return obs
 
@@ -104,10 +107,10 @@ class TradingEnv():
                 if action_type == "open_long" or action_type == "open_short":
                     pass
                 else:
-                    if action_type == "close_long":
+                    if action_type == "close_long" and action["id"] in self.positions.keys():
                         reward += (current_price-self.positions[action["id"]]["entry_price"])*self.positions[action["id"]]["amount"]
                         # print(current_price-self.positions[action["id"]]["entry_price"])
-                    elif action_type == "close_short":
+                    elif action_type == "close_short" and action["id"] in self.positions.keys():
                         reward += (self.positions[action["id"]]["entry_price"]-current_price)*self.positions[action["id"]]["amount"]
 
         return reward - self.accumulate_penalty
@@ -125,7 +128,7 @@ class TradingEnv():
         return self.date[self.current_step]
 
     def getCurrentPostion(self):
-        # date, id, order_type, amount(asset), pnl
+        # ["Date", "Id", "Type", "EntryPrice", "Amount", "PNL","pChange"]
         current_price = self.getCurrentPrice()
 
         positions_list = list()
