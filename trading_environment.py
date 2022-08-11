@@ -135,10 +135,10 @@ class TradingEnv():
         for position_id, position in self.positions.items():
             if position["order_type"] == "long":
                 pnl = (current_price-position["entry_price"]) * position["amount"]
-                percent_change = ((current_price-position["entry_price"])/position["entry_price"] )* 100
+                percent_change = ((current_price-position["entry_price"])/position["entry_price"]) * 100
             elif position["order_type"] == "short":
                 pnl = (position["entry_price"]-current_price) * position["amount"]
-                percent_change = ((position["entry_price"]-current_price)/position["entry_price"] )* 100
+                percent_change = ((position["entry_price"]-current_price)/position["entry_price"]) * 100
 
             positions_list.append([position["date"], position_id, position["order_type"], position["entry_price"], position["amount"], pnl, percent_change])
 
