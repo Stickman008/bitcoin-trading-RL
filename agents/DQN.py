@@ -20,13 +20,13 @@ class DQNAgent():
         self.epsilon_min = 0.01
         self.epsilon_decay = 0.997  # min after 919 times
 
-        self.model = load_model(model_path) if is_eval else self._model()
+        self.model = load_model(model_path) if is_eval else self.create_model()
 
     def create_model(self):
         model = Sequential()
-        model.add(Dense(512), input_dim=self.state_size, activation="relu")
-        model.add(Dense(256), activation="relu")
-        model.add(Dense(64), activation="relu")
+        model.add(Dense(512, input_dim=self.state_size, activation="relu"))
+        model.add(Dense(256, activation="relu"))
+        model.add(Dense(64, activation="relu"))
         model.add(Dense(self.action_size, activation="linear"))
         model.compile(loss="mse", optimizer=Adam(learning_rate=1e-3))
 
@@ -39,8 +39,7 @@ class DQNAgent():
         options = self.model.predict(state)
         return np.argmax(options[0])
 
-    def expReplay(self):
-        batch_size = 10
+    def expReplay(self, batch_size):
         mini_batch = []
         l = len(self.replay_memory)
         for i in range(l - batch_size + 1, l):
@@ -53,12 +52,14 @@ class DQNAgent():
                     np.amax(self.model.predict(next_state)[0])
 
             target_f = self.model.predict(state)
-            # target_f = np.array([[-0.29894474, 0.00347429,  0.00691323]])
             target_f[0][action] = target
             self.model.fit(state, target_f, epochs=1, verbose=0)
 
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+
+    def save(self, path="save_models/test_model.h5"):
+        self.model.save(path)
 
 
 if __name__ == "__main__":
