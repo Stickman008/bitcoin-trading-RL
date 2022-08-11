@@ -18,7 +18,7 @@ class DQNAgent():
         self.gamma = 0.95
         self.epsilon = 1.0
         self.epsilon_min = 0.01
-        self.epsilon_decay = 0.997  # min after 919 times
+        self.epsilon_decay = 0.995  # min after 919 times
 
         self.model = load_model(model_path) if is_eval else self._model()
 
