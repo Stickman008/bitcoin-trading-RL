@@ -46,10 +46,10 @@ class DQNAgent():
             mini_batch.append(self.replay_memory[i])
 
         for state, action, reward, next_state, done in mini_batch:
+            # print(state.shape, action, reward, next_state.shape, done)
             target = reward
             if not done:
-                target = reward + self.gamma * \
-                    np.amax(self.model.predict(next_state)[0])
+                target = reward + self.gamma * np.amax(self.model.predict(next_state)[0])
 
             target_f = self.model.predict(state)
             target_f[0][action] = target

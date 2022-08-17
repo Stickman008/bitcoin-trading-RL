@@ -1,5 +1,6 @@
 import os
 import time
+import datetime
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -28,7 +29,7 @@ for episode in range(EPISODES):
     episode_start_time = time.time()
     print(f"----------- Episode:{episode+1}/{EPISODES} -----------")
     env.reset()
-    done = False
+    done, cnt_idx = False, 0
     state = env.get_observation()
 
     while not done:
@@ -46,7 +47,11 @@ for episode in range(EPISODES):
     
     episode_end_time = time.time()
     total_time += episode_end_time - episode_start_time
-    # print("--- %s seconds ---" % (episode_end_time - episode_start_time))
+
+    print(f"Episode: {episode} -> {episode_end_time-episode_start_time} second")
+    if episode % 5 == 0 or episode == EPISODES-1:
+        now = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        agent.save(f"output_models/model_ws_{WINDOW_SIZE}_ep_{episode}_at_{now}")
 
 print(f"total time: {total_time}")
 # for 50_000 -> 1636.39 sec = 27.27 min -> 30.56 it/sec (when note perform replay experience)
