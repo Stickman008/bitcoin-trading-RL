@@ -13,7 +13,7 @@ print(tf.config.list_physical_devices('GPU'))
 data_df = load_data("data/Bitfinex_BTCUSD_1h_2019")
 
 EPISODES = 1_000
-BUFFER_SIZE = 50
+BUFFER_SIZE = 10
 
 WINDOW_SIZE = 50
 INITIALIZE_BALANCE = 100_000
@@ -42,9 +42,9 @@ for episode in range(EPISODES):
         state = next_state
 
         if len(agent.replay_memory) > BUFFER_SIZE:
-            agent.expReplay(WINDOW_SIZE)
+            agent.expReplay(BUFFER_SIZE)
 
-        print(cnt_idx)
+        print(f"index: {cnt_idx}, action: {action}")
         cnt_idx += 1
         
     
