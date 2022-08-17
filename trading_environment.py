@@ -89,7 +89,7 @@ class TradingEnv():
     
 
     def get_observation(self, features=False):
-        obs = self.prices[self.current_step-self.window_size: self.current_step].reshape(-1, 1)
+        obs = self.prices[self.current_step-self.window_size: self.current_step].reshape(1, -1)
         if features:
             obs = np.concatenate([obs, self.features[self.current_step-self.window_size: self.current_step, :]], axis=1)
         return obs
