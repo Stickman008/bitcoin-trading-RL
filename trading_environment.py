@@ -1,6 +1,3 @@
-from itertools import accumulate
-from pyexpat import features
-from turtle import position
 import numpy as np
 import pandas as pd
 
@@ -46,6 +43,15 @@ class TradingEnv():
         current_price = self.getCurrentPrice()
         current_date = self.getCurrentDate()
         reward = self.get_reward(actions)
+
+        # all in
+        if (action["order_type"] == "open_long" or action["order_type"] == "open_short") and action["amount"] is None:
+            action["amount"] = self.balance
+        # close first position that open
+        if (action["order_type"] == "close_long" or action["order_type"] == "close_short") and action["amount"] is None:
+            for position in self.positions:
+                action["id"] = position["id"]
+                break
         
         for action in actions:
             if action["order_type"] == "open_long" and self.balance >= action["amount"]:
@@ -89,9 +95,10 @@ class TradingEnv():
     
 
     def get_observation(self, features=False):
-        obs = self.prices[self.current_step-self.window_size: self.current_step].reshape(-1, 1)
+        obs = self.prices[self.current_step-self.window_size: self.current_step].reshape(1, -1)
         if features:
-            obs = np.concatenate([obs, self.features[self.current_step-self.window_size: self.current_step, :]], axis=1)
+            # TODO
+            obs = np.concatenate([obs, self.features[self.current_step-self.window_size: self.current_step, :]], axis=0)
         return obs
 
     def get_reward(self, actions):
@@ -109,7 +116,6 @@ class TradingEnv():
                 else:
                     if action_type == "close_long" and action["id"] in self.positions.keys():
                         reward += (current_price-self.positions[action["id"]]["entry_price"])*self.positions[action["id"]]["amount"]
-                        # print(current_price-self.positions[action["id"]]["entry_price"])
                     elif action_type == "close_short" and action["id"] in self.positions.keys():
                         reward += (self.positions[action["id"]]["entry_price"]-current_price)*self.positions[action["id"]]["amount"]
 

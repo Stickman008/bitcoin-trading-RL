@@ -1,4 +1,5 @@
 import os
+import random
 import pandas as pd
 import pandas_ta as ta
 
@@ -16,7 +17,7 @@ def load_data(path, strategy=None):
 def modify_strategy(df, strategy):
     df.ta.strategy(strategy, timed=True)
     
-def action_to_order(action, amount=1_000, id=0):
+def action_to_order(action, amount=None, id=None):
     if action == 0:
         return []
     elif action == 1:
@@ -27,3 +28,17 @@ def action_to_order(action, amount=1_000, id=0):
         return [{"order_type": "open_short", "amount": amount}]
     elif action == 4:
         return [{"order_type": "close_short", "id": id}]
+
+def random_game(env, episodes, actions=None):
+    if actions is None:
+        actions = [0, 1, 2] # sit, open_long, close_long
+    for episode in range(episodes):
+        print(f"----------- Episode:{episode+1}/{episodes} -----------")
+        env.reset()
+        done = False
+
+        while not done:
+            action = random.choice(actions)
+            orders = action_to_order(action, amount=None, id=None)
+            state, reward, done = env.step(orders)
+    

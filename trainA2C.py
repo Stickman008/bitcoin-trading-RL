@@ -33,9 +33,8 @@ for episode in range(EPISODES):
     while not done:
         action = agent.act(state)
         
-        orders = action_to_order(action)
+        orders = action_to_order(action, amount=None, id=None)
         state, reward, done = env.step(orders)
-        
         
     
     episode_end_time = time.time()
@@ -43,4 +42,4 @@ for episode in range(EPISODES):
     # print("--- %s seconds ---" % (episode_end_time - episode_start_time))
 
 print(f"total time: {total_time}")
-# for 50_000 -> 1636.39 sec = 27.27 min -> 30.56 it/sec (when note perform replay experience)
+# for 50_000 -> 1636.39 sec = 27.27 min -> 30.56 it/sec (when not perform any fit)

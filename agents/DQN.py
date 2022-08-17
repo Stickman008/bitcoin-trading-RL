@@ -2,7 +2,7 @@ from collections import deque
 import random
 
 import numpy as np
-import tensorflow
+import tensorflow as tf
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, LSTM, Dropout
 from tensorflow.keras.optimizers import Adam, RMSprop
@@ -43,7 +43,7 @@ class DQNAgent():
         mini_batch = []
         l = len(self.replay_memory)
         for i in range(l - batch_size + 1, l):
-            mini_batch.append(self.memory[i])
+            mini_batch.append(self.replay_memory[i])
 
         for state, action, reward, next_state, done in mini_batch:
             target = reward

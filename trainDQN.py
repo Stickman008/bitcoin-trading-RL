@@ -11,7 +11,8 @@ print(tf.config.list_physical_devices('GPU'))
 
 data_df = load_data("data/Bitfinex_BTCUSD_1h_2019")
 
-EPISODES = 5_000
+EPISODES = 1_000
+BATCH_SIZE = 10
 
 WINDOW_SIZE = 50
 INITIALIZE_BALANCE = 100_000
@@ -33,9 +34,14 @@ for episode in range(EPISODES):
     while not done:
         action = agent.act(state)
         
-        orders = action_to_order(action)
-        state, reward, done = env.step(orders)
+        orders = action_to_order(action, amount=POSITION_SIZE)
+        next_state, reward, done = env.step(orders)
         
+        agent.replay_memory.append((state, action, reward, next_state, done))
+        state = next_state
+        if len(agent.replay_memory) >= BATCH_SIZE:
+            agent.expReplay(BATCH_SIZE)
+        print(f"state idx: {env.current_step} action: {action}")
         
     
     episode_end_time = time.time()
